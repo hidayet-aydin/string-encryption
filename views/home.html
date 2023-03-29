@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= app.name %></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="<%= resourcePath %>/assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="<%= resourcePath %>/assets/js/jquery.json-viewer.min.css"
+    />
+    <script src="<%= resourcePath %>/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="<%= resourcePath %>/assets/js/jquery.json-viewer.min.js"></script>
+  </head>
+  <body>
+    <div class="style-top">
+      <div class="style-bar style-white style-wide style-padding style-card">
+        <a href="/home" class="style-bar-item style-button"
+          ><b> <%= app.name %> </b> homework
+        </a>
+        <%if(isAuthenticated){%>
+        <div
+          class="style-right style-hide-small"
+          style="background-color: azure"
+        >
+          <a href="/auth/signout" class="style-bar-item style-button"
+            >Signout</a
+          >
+        </div>
+        <div
+          class="style-right style-hide-small"
+          style="background-color: azure"
+        >
+          <a href="/auth/profile" class="style-bar-item style-button"
+            >Edit Profile</a
+          >
+        </div>
+        <%} else {%>
+        <div
+          class="style-right style-hide-small"
+          style="background-color: azure"
+        >
+          <a href="/auth/signin" class="style-bar-item style-button">Signin</a>
+        </div>
+        <%}%>
+        <div
+          class="style-right style-hide-small"
+          style="background-color: ghostwhite"
+        >
+          <a href="/auth/reset" class="style-bar-item style-button"
+            >Reset Password</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="style-content style-padding" style="max-width: 1564px">
+      <div class="style-container style-padding-32" id="results">
+        <h3
+          class="style-border-bottom style-border-light-grey style-padding-16"
+        >
+          Results
+        </h3>
+        <textarea id="json-input" autocomplete="off" style="display: none">
+<%= results %> </textarea
+        >
+        <p class="options">
+          <label title="Surround keys with quotes">
+            <input type="checkbox" id="with-quotes" checked />Keys with quotes
+          </label>
+        </p>
+        <pre id="json-renderer"></pre>
+      </div>
+    </div>
+
+    <footer class="style-center style-black style-padding-16">
+      <p>
+        <a
+          href="<%= redirectUrl %>"
+          title="W3.CSS"
+          target="_blank"
+          class="style-hover-text-green"
+          ><%= app.name %></a
+        >
+        updated in 2023
+      </p>
+    </footer>
+  </body>
+  <script>
+    $(function () {
+      function renderJson() {
+        try {
+          var input = eval("(" + $("#json-input").val() + ")");
+        } catch (error) {
+          return alert(error.message);
+        }
+        var options = {
+          collapsed: false,
+          rootCollapsable: true,
+          withQuotes: $("#with-quotes").is(":checked"),
+          withLinks: true,
+        };
+        $("#json-renderer").jsonViewer(input, options);
+      }
+
+      $("p.options input[type=checkbox]").click(renderJson);
+
+      renderJson();
+    });
+  </script>
+</html>

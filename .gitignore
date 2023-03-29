@@ -1,0 +1,11 @@
+## Files
+local.settings.json
+package-lock.json
+.DS_Store
+
+## Folder
+.vscode
+node_modules
+azureStorage
+extra-documents
+static

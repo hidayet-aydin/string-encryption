@@ -1,0 +1,42 @@
+{
+  "name": "string-encryption",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "func": "func host start --port 7071 --useHttps",
+    "func:unix:kill": "kill -9 $(lsof -t -i:7071)",
+    "static-server": "./node_modules/.bin/live-server --no-browser --cors --port=3000 --host=localhost --open=/static",
+    "storage:unix:key": "export AzureWebJobsStorage=`(grep -o '\"AzureWebJobsStorage\": \"[^\"]*' local.settings.json | grep -o '[^\"]*$')`",
+    "storage:unix:upload": "./node_modules/.bin/azsm upload -f static/assets -c cdn-se/assets"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [
+    "azure",
+    "function",
+    "encryption",
+    "session"
+  ],
+  "author": {
+    "name": "hidayet-aydin",
+    "email": "aydin.hid@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@azure/data-tables": "^13.2.1",
+    "@azure/msal-node": "^1.15.0",
+    "@azure/storage-blob": "^12.13.0",
+    "axios": "^0.27.2",
+    "cookie": "^0.5.0",
+    "ejs": "^3.1.8",
+    "jsonwebtoken": "^9.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.5030",
+    "azure-storage-manager": "^0.3.1",
+    "live-server": "^1.1.0"
+  }
+}
