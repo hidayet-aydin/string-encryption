@@ -12,13 +12,11 @@ export default async function (context, req) {
   if (session && session.isAuthenticated) {
     isAuthenticated = true;
   } else {
-    session = {
-      isAuthenticated,
-    };
-    const session_id = await setSession(context, session);
-    newCookies.push({
-      name: "session.id",
-      value: session_id,
+    return (context.res = {
+      status: 302,
+      headers: {
+        location: authConfig.url.login,
+      },
     });
   }
 

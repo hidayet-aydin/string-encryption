@@ -6,18 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="#" />
     <link rel="stylesheet" href="<%= resourcePath %>/assets/css/style.css" />
-    <link
-      rel="stylesheet"
-      href="<%= resourcePath %>/assets/js/jquery.json-viewer.min.css"
-    />
+
     <script src="<%= resourcePath %>/assets/js/jquery-3.3.1.min.js"></script>
     <script src="<%= resourcePath %>/assets/js/jquery.json-viewer.min.js"></script>
+    <script src="<%= resourcePath %>/assets/js/plotly-2.18.2.min.js"></script>
   </head>
   <body>
     <div class="style-top">
-      <div class="style-bar style-white style-wide style-padding style-card">
+      <div class="style-bar style-white style-card">
         <a href="/home" class="style-bar-item style-button"
-          ><b> <%= app.name %> </b> homework
+          ><b> <%= app.name %> (Caesar)</b> Homework1
         </a>
         <%if(isAuthenticated){%>
         <div
@@ -55,22 +53,36 @@
       </div>
     </div>
 
-    <div class="style-content style-padding" style="max-width: 1564px">
-      <div class="style-container style-padding-32" id="results">
-        <h3
+    <div class="style-content" style="max-width: 1564px">
+      <div class="style-container style-padding-16" id="results">
+        <h4
           class="style-border-bottom style-border-light-grey style-padding-16"
         >
-          Results
-        </h3>
-        <textarea id="json-input" autocomplete="off" style="display: none">
-<%= results %> </textarea
+          Orginal Text
+        </h4>
+        <textarea id="orginal_text" name="orginal_text"></textarea>
+
+        <h4
+          class="style-border-bottom style-border-light-grey style-padding-16"
         >
-        <p class="options">
-          <label title="Surround keys with quotes">
-            <input type="checkbox" id="with-quotes" checked />Keys with quotes
-          </label>
-        </p>
-        <pre id="json-renderer"></pre>
+          Text Encryption with Shifting
+        </h4>
+
+        <div class="run-container">
+          <input
+            type="number"
+            name="cipher_shift"
+            id="cipher_shift"
+            class="run-input"
+            value="0"
+          />
+          <button class="run-button" onclick="run()">RUN</button>
+          <button class="run-button" onclick="histogram()">HISTOGRAM</button>
+        </div>
+
+        <textarea id="encrypted_text" name="encrypted_text"></textarea>
+
+        <div id="graph"></div>
       </div>
     </div>
 
@@ -88,25 +100,117 @@
     </footer>
   </body>
   <script>
-    $(function () {
-      function renderJson() {
-        try {
-          var input = eval("(" + $("#json-input").val() + ")");
-        } catch (error) {
-          return alert(error.message);
+    const histogram = () => {
+      let y = [];
+      let x = [];
+      let collection = {};
+      const encrypted_text = document.querySelector("#encrypted_text").value;
+      for (let index in encrypted_text) {
+        if (!collection[`"${encrypted_text[index]}"`]) {
+          collection[`"${encrypted_text[index]}"`] = 1;
+        } else {
+          collection[`"${encrypted_text[index]}"`] += 1;
         }
-        var options = {
-          collapsed: false,
-          rootCollapsable: true,
-          withQuotes: $("#with-quotes").is(":checked"),
-          withLinks: true,
-        };
-        $("#json-renderer").jsonViewer(input, options);
       }
 
-      $("p.options input[type=checkbox]").click(renderJson);
+      Object.keys(collection)
+        .map((index) => {
+          return { letter: index, quantity: collection[index] };
+        })
+        .sort((a, b) => {
+          if (a.quantity < b.quantity) {
+            return -1;
+          }
+        })
+        .reverse()
+        .forEach((each) => {
+          x.push(each.letter);
+          y.push(each.quantity);
+        });
 
-      renderJson();
-    });
+      const trace = { type: "bar", x, y };
+      const data = [trace];
+      Plotly.newPlot("graph", data);
+    };
+
+    const caesarEncryption = (plaintext, shiftAmount) => {
+      let ciphertext = "";
+      for (let character of plaintext) {
+        plainCharacter = character.charCodeAt(0);
+        let newCharCode = ((plainCharacter + shiftAmount - 20) % 99999) + 20;
+        newCharCode = newCharCode > 0 ? newCharCode : newCharCode + 99999;
+        ciphertext += String.fromCharCode(newCharCode);
+      }
+      return ciphertext;
+    };
+
+    const run = () => {
+      const orginal_text = document.querySelector("#orginal_text").value;
+      const shift = parseInt(document.querySelector("#cipher_shift").value);
+      document.querySelector("#encrypted_text").value = caesarEncryption(
+        orginal_text,
+        shift
+      );
+    };
+
+    function generate() {
+      const sentences = [
+        "Dolor quia enim illum voluptas fugit sit.",
+        " Amet fuga officia est et ut non aliquam.",
+        " Ut ab natus voluptatum corrupti quia et.",
+        " Quo minima dolorum ea culpa.",
+        " Similique deleniti sit voluptatibus dignissimos voluptas consequuntur vero dolor.",
+        " Corporis dolorum eos architecto eos ame.",
+        " Vel nesciunt voluptatem a ab vel dignissimos.",
+        " Ut a ipsum dignissimos iure sed amet rerum accusamus.",
+        " Ea autem aut hic earum.",
+        " Vel a porro nihil omnis et.",
+        " Expedita dolore ipsa mollitia cum.",
+        " Ut dolores velit assumenda ipsum quis.",
+        "Aliquid sit adipisci est deserunt et sunt.",
+        " Optio dolores iusto reprehenderit est explicabo doloribus illo totam.",
+        " Facilis nam et quia.",
+        " Recusandae sed similique asperiores omnis deleniti odio.",
+        " Quis quod velit blanditiis modi exercitationem hic aut.",
+        " At cum soluta dolorum qui.",
+        " Ducimus aut cum enim deleniti sunt.",
+        " Harum sit minima doloribus eveniet aperiam a distinctio natus.",
+        "Facilis accusamus libero natus numquam maiores.",
+        " Sed odio necessitatibus est sapiente aut ut voluptas.",
+        " Provident odio harum ut tenetur qui.",
+        " Voluptatibus vitae placeat voluptas.",
+        " Totam aliquam fugiat eligendi eum.",
+        " Quia aliquid nam et veniam aut qui qui dolor.",
+        " Quia et enim perferendis enim perferendis.",
+        " Minus doloremque molestiae est vel dolorem neque rem.",
+        " Eveniet quae sint harum qui sint rerum qui.",
+        " Facilis modi reprehenderit dolor adipisci et.",
+      ];
+      var rand1 = Math.floor(Math.random() * 30);
+      var rand2 = Math.floor(Math.random() * 30);
+      var rand3 = Math.floor(Math.random() * 30);
+      var rand4 = Math.floor(Math.random() * 30);
+      var rand5 = Math.floor(Math.random() * 30);
+      var rand6 = Math.floor(Math.random() * 30);
+      var rand7 = Math.floor(Math.random() * 30);
+      var rand8 = Math.floor(Math.random() * 30);
+      var rand9 = Math.floor(Math.random() * 30);
+      var rand10 = Math.floor(Math.random() * 30);
+
+      const result =
+        sentences[rand1] +
+        sentences[rand2] +
+        sentences[rand3] +
+        sentences[rand4] +
+        sentences[rand5] +
+        sentences[rand6] +
+        sentences[rand7] +
+        sentences[rand8] +
+        sentences[rand9] +
+        sentences[rand10];
+      return result;
+    }
+
+    document.querySelector("#orginal_text").value = generate();
   </script>
 </html>
