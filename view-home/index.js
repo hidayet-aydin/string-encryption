@@ -25,6 +25,7 @@ export default async function (context, req) {
     redirectUrl: process.env["CONFIG_HOME_URI"],
     app: authConfig.app,
     isAuthenticated,
+    isNotShowSignin: false,
     results: JSON.stringify(session || {}),
   });
 

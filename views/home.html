@@ -43,14 +43,14 @@
             >Edit Profile</a
           >
         </div>
-        <%} else {%>
+        <%} else {%> <%if(!isNotShowSignin){%>
         <div
           class="style-right style-hide-small"
           style="background-color: azure"
         >
           <a href="/auth/signin" class="style-bar-item style-button">Signin</a>
         </div>
-        <%}%>
+        <%}%> <%}%> <%if(!isNotShowSignin){%>
         <div
           class="style-right style-hide-small"
           style="background-color: ghostwhite"
@@ -59,6 +59,7 @@
             >Reset Password</a
           >
         </div>
+        <%}%>
       </div>
     </div>
 
