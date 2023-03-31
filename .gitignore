@@ -8,4 +8,4 @@ package-lock.json
 node_modules
 azureStorage
 extra-documents
-static
+# static

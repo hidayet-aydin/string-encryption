@@ -1,0 +1,297 @@
+* {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: Verdana, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+h3 {
+  font-size: 24px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  /* font-weight: 400; */
+  margin: 10px 0;
+}
+
+h4 {
+  font-size: 18px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  /* font-weight: 300; */
+  margin: 10px 0;
+}
+
+html {
+  box-sizing: border-box;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: Verdana, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+  overflow: auto;
+}
+
+.run-container {
+  display: flex;
+  border: 3px solid orange;
+  height: 50px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.run-input {
+  flex-grow: 1;
+  flex-basis: 0;
+  height: 44px;
+  width: 33%;
+  padding: 0;
+  font-size: 18px;
+  padding: 0;
+  margin-left: 20px;
+  border: none;
+}
+.run-input:focus {
+  outline: none;
+  display: inline-block;
+}
+
+.run-button {
+  flex-grow: 1;
+  flex-basis: 0;
+  background: orange;
+  color: white;
+  border: white;
+  font-weight: bold;
+}
+
+.run-button:hover {
+  color: black;
+  background-color: #ccc !important;
+  cursor: pointer;
+}
+
+[type="checkbox"] {
+  padding: 0;
+}
+
+pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+a {
+  background-color: transparent;
+  color: inherit;
+}
+
+a:active,
+a:hover {
+  outline-width: 0;
+}
+
+b {
+  font-weight: bolder;
+}
+
+.style-top {
+  /* position: fixed; */
+  width: 100%;
+  z-index: 1;
+  top: 0;
+}
+
+.style-content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 980px;
+}
+
+.style-wide {
+  letter-spacing: 4px;
+}
+
+.style-bar {
+  width: 100%;
+  overflow: hidden;
+}
+
+.style-card {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.style-padding {
+  padding: 8px 16px !important;
+}
+
+.style-white {
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+*,
+:before,
+:after {
+  box-sizing: inherit;
+}
+
+.style-container {
+  padding: 0.01em 16px;
+}
+
+.style-padding-32 {
+  padding-top: 32px !important;
+  padding-bottom: 32px !important;
+}
+
+.style-container:after,
+.style-container:before,
+.style-panel:after,
+.style-panel:before,
+.style-row:after,
+.style-row:before,
+.style-row-padding:after,
+.style-row-padding:before,
+.style-cell-row:before,
+.style-cell-row:after,
+.style-clear:after,
+.style-clear:before,
+.style-bar:before,
+.style-bar:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.style-border-bottom {
+  border-bottom: 1px solid #ccc !important;
+}
+
+.style-padding-16 {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+.style-border-light-grey {
+  border-color: #f1f1f1 !important;
+}
+
+.style-button {
+  display: inline-block;
+  border: none;
+  padding: 8px 16px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background-color: inherit;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.style-bar .style-bar-item {
+  padding: 8px 16px;
+  float: left;
+  width: auto;
+  border: none;
+  display: block;
+  outline: 0;
+}
+
+.style-bar .style-button {
+  white-space: normal;
+}
+
+.style-button:hover {
+  color: #000 !important;
+  background-color: #ccc !important;
+}
+
+.style-right {
+  float: right !important;
+}
+
+.style-black,
+.style-hover-black:hover {
+  color: #fff !important;
+  background-color: #000 !important;
+}
+
+.style-padding-16 {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+.style-center {
+  text-align: center !important;
+}
+
+footer,
+header,
+main,
+menu,
+nav,
+section {
+  display: block;
+}
+
+.heading {
+  font-size: 25px;
+  margin-right: 25px;
+}
+
+.fa {
+  font-size: 25px;
+}
+
+.checked {
+  color: orange;
+}
+
+/* Individual bars */
+.bar-5 {
+  width: 60%;
+  height: 18px;
+  background-color: #04aa6d;
+}
+.bar-4 {
+  width: 30%;
+  height: 18px;
+  background-color: #2196f3;
+}
+.bar-3 {
+  width: 10%;
+  height: 18px;
+  background-color: #00bcd4;
+}
+.bar-2 {
+  width: 4%;
+  height: 18px;
+  background-color: #ff9800;
+}
+.bar-1 {
+  width: 15%;
+  height: 18px;
+  background-color: #f44336;
+}
