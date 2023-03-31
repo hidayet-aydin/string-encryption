@@ -6,16 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="#" />
     <link rel="stylesheet" href="<%= resourcePath %>/assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="<%= resourcePath %>/assets/js/jquery.json-viewer.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="<%= resourcePath %>/font-awesome/css/font-awesome.min.css"
+    />
 
     <script src="<%= resourcePath %>/assets/js/jquery-3.3.1.min.js"></script>
     <script src="<%= resourcePath %>/assets/js/jquery.json-viewer.min.js"></script>
     <script src="<%= resourcePath %>/assets/js/plotly-2.18.2.min.js"></script>
+    <script src="<%= resourcePath %>/assets/js/jquery.json-viewer.min.js"></script>
   </head>
   <body>
     <div class="style-top">
       <div class="style-bar style-white style-card">
         <a href="/home" class="style-bar-item style-button"
-          ><b> <%= app.name %> (Caesar)</b> Homework1
+          ><b> <%= app.name %> (Unicode-Shifting)</b> Homework1
         </a>
         <%if(isAuthenticated){%>
         <div
@@ -54,35 +63,94 @@
     </div>
 
     <div class="style-content" style="max-width: 1564px">
-      <div class="style-container style-padding-16" id="results">
-        <h4
-          class="style-border-bottom style-border-light-grey style-padding-16"
-        >
-          Orginal Text
-        </h4>
-        <textarea id="orginal_text" name="orginal_text"></textarea>
+      <div class="style-container style-padding-16">
+        <div id="encrypting_div">
+          <h4
+            class="style-border-bottom style-border-light-grey style-padding-16"
+          >
+            Plain Text
+          </h4>
+          <textarea id="plain_text" name="plain_text"></textarea>
 
-        <h4
-          class="style-border-bottom style-border-light-grey style-padding-16"
-        >
-          Text Encryption with Shifting
-        </h4>
+          <h4
+            class="style-border-bottom style-border-light-grey style-padding-16"
+          >
+            Encryption with Shifting
+          </h4>
 
-        <div class="run-container">
-          <input
-            type="number"
-            name="cipher_shift"
-            id="cipher_shift"
-            class="run-input"
-            value="0"
-          />
-          <button class="run-button" onclick="run()">RUN</button>
-          <button class="run-button" onclick="histogram()">HISTOGRAM</button>
+          <div class="run-container">
+            <input
+              type="number"
+              name="cipher_shift"
+              id="cipher_shift"
+              class="run-input"
+              value="0"
+            />
+            <button class="run-button" onclick="encryption()">
+              <i class="fa fa-rocket" aria-hidden="true"></i>
+              ENCRYPT IT!
+            </button>
+            <button class="run-button" onclick="histogram1()">
+              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+              HISTOGRAM
+            </button>
+          </div>
+
+          <textarea id="encrypted_text" name="encrypted_text"></textarea>
+
+          <div id="graph1"></div>
         </div>
 
-        <textarea id="encrypted_text" name="encrypted_text"></textarea>
+        <div id="reference_div" style="display: none">
+          <h4
+            class="style-border-bottom style-border-light-grey style-padding-16"
+          >
+            Reference Text
+          </h4>
+          <textarea id="reference_text" name="reference_text"></textarea>
+          <div class="run-container">
+            <button class="run-button" onclick="histogram2()">
+              <i class="fa fa-bar-chart" aria-hidden="true"></i> HISTOGRAM
+            </button>
+          </div>
+        </div>
 
-        <div id="graph"></div>
+        <div id="encryption_div" style="display: none">
+          <div id="graph2"></div>
+          Translation Dictionary
+          <pre id="json-renderer"></pre>
+          <div class="run-container">
+            <button class="run-button" onclick="decryption()">
+              <i class="fa fa-rocket" aria-hidden="true"></i>
+              DECRYPT IT!
+            </button>
+          </div>
+        </div>
+
+        <div id="result_div" style="display: none">
+          <h4
+            class="style-border-bottom style-border-light-grey style-padding-16"
+          >
+            Decryption Results
+          </h4>
+
+          <div>
+            <span class="heading">Accuracy Rating</span>
+            <span id="star_lvl1" class="fa fa-star"></span>
+            <span id="star_lvl2" class="fa fa-star"></span>
+            <span id="star_lvl3" class="fa fa-star"></span>
+            <span id="star_lvl4" class="fa fa-star"></span>
+            <span id="star_lvl5" class="fa fa-star"></span>
+            <p>
+              <b id="true_count">?</b> of the total
+              <b id="total_count">?</b> characters are true, whereas
+              <b id="false_count">?</b> are false.
+            </p>
+            <hr style="border: 3px solid #f1f1f1" />
+          </div>
+
+          <textarea id="result_text" name="result_text"></textarea>
+        </div>
       </div>
     </div>
 
@@ -95,21 +163,120 @@
           class="style-hover-text-green"
           ><%= app.name %></a
         >
-        updated in 2023
+        designed by Hidayet AYDIN (21501028)
       </p>
     </footer>
   </body>
   <script>
-    const histogram = () => {
+    const decryption = () => {
+      const plain_text = document.querySelector("#plain_text").value;
+      const encrypted_text = document.querySelector("#encrypted_text").value;
+      if (
+        encrypted_text.length > 0 &&
+        plain_text.length > 0 &&
+        Object.values(translate).length > 0
+      ) {
+        const result_div = document.querySelector("#result_div");
+        result_div.style.display = "block";
+        let newPlainText = "";
+        for (let character of encrypted_text) {
+          newPlainText += translate[character];
+        }
+        document.querySelector("#result_text").value = newPlainText;
+
+        let tChars = 0,
+          fChars = 0;
+        for (let index in newPlainText) {
+          if (newPlainText[index] == plain_text[index]) {
+            tChars += 1;
+          } else {
+            fChars += 1;
+          }
+        }
+
+        const rate = parseInt((tChars / (tChars + fChars)) * 100);
+
+        if (rate >= 10) {
+          document.querySelector("#star_lvl1").classList.add("checked");
+        } else {
+          document.querySelector("#star_lvl1").classList.remove("checked");
+        }
+
+        if (rate >= 20) {
+          document.querySelector("#star_lvl2").classList.add("checked");
+        } else {
+          document.querySelector("#star_lvl2").classList.remove("checked");
+        }
+
+        if (rate >= 40) {
+          document.querySelector("#star_lvl3").classList.add("checked");
+        } else {
+          document.querySelector("#star_lvl3").classList.remove("checked");
+        }
+
+        if (rate >= 60) {
+          document.querySelector("#star_lvl4").classList.add("checked");
+        } else {
+          document.querySelector("#star_lvl4").classList.remove("checked");
+        }
+
+        if (rate >= 95) {
+          document.querySelector("#star_lvl5").classList.add("checked");
+        } else {
+          document.querySelector("#star_lvl5").classList.remove("checked");
+        }
+
+        console.log(tChars, fChars, tChars + fChars);
+        document.querySelector("#total_count").innerText = (
+          tChars + fChars
+        ).toString();
+        document.querySelector("#true_count").innerText = tChars.toString();
+        document.querySelector("#false_count").innerText = fChars.toString();
+      }
+    };
+
+    let translate = {};
+    function renderJson() {
+      const reference_text = document.querySelector("#reference_text").value;
+      const refFreqList = freqAnalysis(reference_text)[1];
+
+      const encrypted_text = document.querySelector("#encrypted_text").value;
+      const encryptFreqList = freqAnalysis(encrypted_text)[1];
+
+      if (refFreqList.length > 0 && encryptFreqList.length > 0) {
+        const jsonRender = document.querySelector("#json-renderer");
+
+        translate = encryptFreqList.reduce((prev, curr, i) => {
+          let temp = {};
+          if (refFreqList[i]) {
+            temp[curr] = refFreqList[i];
+          } else {
+            temp[curr] = encryptFreqList[i];
+          }
+
+          prev = { ...prev, ...temp };
+          return prev;
+        }, {});
+
+        var options = {
+          collapsed: true,
+          rootCollapsable: true,
+          withQuotes: true,
+          withLinks: true,
+        };
+        $("#json-renderer").jsonViewer(translate, options);
+      }
+    }
+
+    const freqAnalysis = (text) => {
       let y = [];
       let x = [];
       let collection = {};
-      const encrypted_text = document.querySelector("#encrypted_text").value;
-      for (let index in encrypted_text) {
-        if (!collection[`"${encrypted_text[index]}"`]) {
-          collection[`"${encrypted_text[index]}"`] = 1;
+      for (let index in text) {
+        if (!collection[`${text[index]}`]) {
+          collection[`${text[index]}`] = 1;
         } else {
-          collection[`"${encrypted_text[index]}"`] += 1;
+          collection[`${text[index]}`] += 1;
         }
       }
 
@@ -128,32 +295,93 @@
           y.push(each.quantity);
         });
 
-      const trace = { type: "bar", x, y };
-      const data = [trace];
-      Plotly.newPlot("graph", data);
+      return [y, x];
     };
 
-    const caesarEncryption = (plaintext, shiftAmount) => {
+    const histogram2 = () => {
+      const reference_text = document.querySelector("#reference_text").value;
+      if (reference_text.length > 0) {
+        const encryption_div = document.querySelector("#encryption_div");
+        encryption_div.style.display = "block";
+
+        let data = [];
+        if (reference_text.trim() != "") {
+          const [y, x] = freqAnalysis(reference_text);
+          const trace = { type: "bar", y, x };
+          data.push(trace);
+        }
+
+        Plotly.newPlot("graph2", data);
+        renderJson();
+      }
+    };
+
+    const histogram1 = () => {
+      const encrypted_text = document.querySelector("#encrypted_text").value;
+      const graph1 = document.querySelector("#graph1");
+      document.querySelector("#reference_div").style.display = "block";
+
+      let data = [];
+      if (encrypted_text.trim() != "") {
+        const [y, x] = freqAnalysis(encrypted_text);
+        const trace = { type: "bar", y, x };
+        data.push(trace);
+      }
+
+      Plotly.newPlot("graph1", data);
+      if (document?.body?.scrollTop) {
+        document.body.scrollTop = graph1.scrollHeight;
+      } else {
+        document.documentElement.scrollTop = graph1.scrollHeight;
+      }
+    };
+
+    const shiftEncryption = (plaintext, shiftAmount) => {
       let ciphertext = "";
       for (let character of plaintext) {
         plainCharacter = character.charCodeAt(0);
-        let newCharCode = ((plainCharacter + shiftAmount - 20) % 99999) + 20;
-        newCharCode = newCharCode > 0 ? newCharCode : newCharCode + 99999;
-        ciphertext += String.fromCharCode(newCharCode);
+        let newCharCode = plainCharacter + shiftAmount - 33;
+        if (newCharCode > 0) {
+          ciphertext += String.fromCharCode((newCharCode % 10000) + 33);
+        } else {
+          ciphertext += String.fromCharCode((newCharCode % 10000) + 10000);
+        }
       }
+
+      // for (let character of plaintext) {
+      //   plainCharacter = character.charCodeAt(0);
+      //   let newCharCode = ((plainCharacter + shiftAmount - 19) % 9931) + 19;
+      //   newCharCode = newCharCode >= 19 ? newCharCode : newCharCode + 9931;
+      //   ciphertext += String.fromCharCode(newCharCode);
+      // }
+
+      // for (let character of plaintext) {
+      //   const plainCharacter = character.charCodeAt(0);
+      //   if (plainCharacter >= 97 && plainCharacter <= 122) {
+      //     ciphertext += String.fromCharCode(
+      //       ((plainCharacter - 97 + shiftAmount) % 26) + 97
+      //     );
+      //   } else if (plainCharacter >= 65 && plainCharacter <= 90) {
+      //     ciphertext += String.fromCharCode(
+      //       ((plainCharacter - 65 + shiftAmount) % 26) + 65
+      //     );
+      //   } else {
+      //     ciphertext += String.fromCharCode(plainCharacter);
+      //   }
+      // }
       return ciphertext;
     };
 
-    const run = () => {
-      const orginal_text = document.querySelector("#orginal_text").value;
+    const encryption = () => {
+      const plain_text = document.querySelector("#plain_text").value;
       const shift = parseInt(document.querySelector("#cipher_shift").value);
-      document.querySelector("#encrypted_text").value = caesarEncryption(
-        orginal_text,
+      document.querySelector("#encrypted_text").value = shiftEncryption(
+        plain_text,
         shift
       );
     };
 
-    function generate() {
+    const LoremIpsumGenerate = () => {
       const sentences = [
         "Dolor quia enim illum voluptas fugit sit.",
         " Amet fuga officia est et ut non aliquam.",
@@ -186,16 +414,16 @@
         " Eveniet quae sint harum qui sint rerum qui.",
         " Facilis modi reprehenderit dolor adipisci et.",
       ];
-      var rand1 = Math.floor(Math.random() * 30);
-      var rand2 = Math.floor(Math.random() * 30);
-      var rand3 = Math.floor(Math.random() * 30);
-      var rand4 = Math.floor(Math.random() * 30);
-      var rand5 = Math.floor(Math.random() * 30);
-      var rand6 = Math.floor(Math.random() * 30);
-      var rand7 = Math.floor(Math.random() * 30);
-      var rand8 = Math.floor(Math.random() * 30);
-      var rand9 = Math.floor(Math.random() * 30);
-      var rand10 = Math.floor(Math.random() * 30);
+      const rand1 = Math.floor(Math.random() * 30);
+      const rand2 = Math.floor(Math.random() * 30);
+      const rand3 = Math.floor(Math.random() * 30);
+      const rand4 = Math.floor(Math.random() * 30);
+      const rand5 = Math.floor(Math.random() * 30);
+      const rand6 = Math.floor(Math.random() * 30);
+      const rand7 = Math.floor(Math.random() * 30);
+      const rand8 = Math.floor(Math.random() * 30);
+      const rand9 = Math.floor(Math.random() * 30);
+      const rand10 = Math.floor(Math.random() * 30);
 
       const result =
         sentences[rand1] +
@@ -209,8 +437,18 @@
         sentences[rand9] +
         sentences[rand10];
       return result;
-    }
+    };
 
-    document.querySelector("#orginal_text").value = generate();
+    document.querySelector("#plain_text").value = LoremIpsumGenerate();
+
+    document
+      .querySelector("#cipher_shift")
+      .addEventListener("change", function (event) {
+        if (this.value > 10000) {
+          this.value = 10000;
+        } else if (this.value < -10000) {
+          this.value = -10000;
+        }
+      });
   </script>
 </html>
